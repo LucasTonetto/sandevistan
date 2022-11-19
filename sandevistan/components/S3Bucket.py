@@ -10,6 +10,9 @@ class S3Bucket(s3_bucket.S3Bucket):
         else:
             kwargs["tags"] = {"cdktf-sandevistan": scope.name}
 
+        if("bucket" not in kwargs):
+            kwargs["bucket"] = bucket_id
+
         if("lifecycle_rule" not in kwargs):
             kwargs["lifecycle_rule"] = [
                 { "enabled": True, "id": "abort-multipart", "prefix": "/", "abortIncompleteMultipartUploadDays": 7 },

@@ -1,9 +1,16 @@
 from constructs import Construct
 from cdktf_cdktf_provider_aws import s3_bucket
+from cdktf_cdktf_provider_aws.s3_bucket_public_access_block import S3BucketPublicAccessBlock, S3BucketPublicAccessBlockConfig
 
 class S3Bucket(s3_bucket.S3Bucket):
 
-    def __init__(self, scope: Construct, bucket_id: str, **kwargs):
+    def __init__(
+        self, 
+        scope: Construct, 
+        bucket_id: str,
+        block_public_access=True,
+        **kwargs
+    ):
 
         if("tags" in kwargs):
             kwargs["tags"] = {"cdktf-sandevistan": scope.name, **kwargs["tags"]}
@@ -23,3 +30,16 @@ class S3Bucket(s3_bucket.S3Bucket):
             ]
 
         super().__init__(scope, bucket_id, **kwargs)
+
+        if(block_public_access == True):
+            
+            s3_block_id = bucket_id + '-block-public-access'
+            
+            S3BucketPublicAccessBlock(
+                scope, s3_block_id, 
+                bucket=bucket_id, 
+                block_public_acls=True,
+                block_public_policy=True,
+                ignore_public_acls=True,
+                restrict_public_buckets=True
+            )

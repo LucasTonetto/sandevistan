@@ -1,6 +1,6 @@
 from constructs import Construct
 from cdktf_cdktf_provider_aws import s3_bucket
-from cdktf_cdktf_provider_aws.s3_bucket_public_access_block import S3BucketPublicAccessBlock, S3BucketPublicAccessBlockConfig
+from sandevistan.components.S3BucketPublicAccessBlock import S3BucketPublicAccessBlock
 
 class S3Bucket(s3_bucket.S3Bucket):
 
@@ -33,13 +33,7 @@ class S3Bucket(s3_bucket.S3Bucket):
 
         if(block_public_access == True):
             
-            s3_block_id = bucket_id + '-block-public-access'
-            
             S3BucketPublicAccessBlock(
-                scope, s3_block_id, 
-                bucket=bucket_id, 
-                block_public_acls=True,
-                block_public_policy=True,
-                ignore_public_acls=True,
-                restrict_public_buckets=True
+                scope,  
+                bucket=bucket_id
             )

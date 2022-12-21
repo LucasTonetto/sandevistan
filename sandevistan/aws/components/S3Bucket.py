@@ -1,6 +1,6 @@
 from constructs import Construct
 from cdktf_cdktf_provider_aws import s3_bucket
-from sandevistan.components.S3BucketPublicAccessBlock import S3BucketPublicAccessBlock
+from sandevistan.aws.components.S3BucketPublicAccessBlock import S3BucketPublicAccessBlock
 
 class S3Bucket(s3_bucket.S3Bucket):
 

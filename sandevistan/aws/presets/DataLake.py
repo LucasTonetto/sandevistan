@@ -1,5 +1,5 @@
 from constructs import Construct
-from sandevistan.components.S3Bucket import S3Bucket
+from sandevistan.aws.components.S3Bucket import S3Bucket
 from sandevistan.errors.MissingArguments import MissingArguments
 
 class DataLake():

@@ -15,13 +15,13 @@ class DataLake():
 
         if("lifecycle_rule" not in kwargs):
             kwargs["lifecycle_rule"] = [
-                # [
-                #     { "enabled": True, "id": "abort-multipart", "prefix": "/", "abortIncompleteMultipartUploadDays": 7 },
-                #     { "enabled": True, "id": "standard-ia-files-30-days", "transition": [{ "days": 30, "storageClass": "STANDARD_IA" }] },
-                #     { "enabled": True, "id": "standard-ia-files-noncurrent-version-30-days", "noncurrentVersionTransition": [{ "days": 30, "storageClass": "STANDARD_IA" }] },
-                #     { "enabled": True, "id": "glacier-flexible-retrieval-files-60-days", "transition": [{ "days": 60, "storageClass": "GLACIER" }] },
-                #     { "enabled": True, "id": "glacier-flexible-retrieval-files-noncurrent-version-60-days", "noncurrentVersionTransition": [{ "days": 60, "storageClass": "GLACIER" }] },
-                # ],
+                [
+                    { "enabled": True, "id": "abort-multipart", "prefix": "/", "abortIncompleteMultipartUploadDays": 7 },
+                    { "enabled": True, "id": "standard-ia-files-30-days", "transition": [{ "days": 30, "storageClass": "STANDARD_IA" }] },
+                    { "enabled": True, "id": "standard-ia-files-noncurrent-version-30-days", "noncurrentVersionTransition": [{ "days": 30, "storageClass": "STANDARD_IA" }] },
+                    { "enabled": True, "id": "glacier-flexible-retrieval-files-60-days", "transition": [{ "days": 60, "storageClass": "GLACIER" }] },
+                    { "enabled": True, "id": "glacier-flexible-retrieval-files-noncurrent-version-60-days", "noncurrentVersionTransition": [{ "days": 60, "storageClass": "GLACIER" }] },
+                ],
                 [
                     { "enabled": True, "id": "abort-multipart", "prefix": "/", "abortIncompleteMultipartUploadDays": 7 },
                     { "enabled": True, "id": "standard-ia-files-30-days", "transition": [{ "days": 30, "storageClass": "STANDARD_IA" }] },

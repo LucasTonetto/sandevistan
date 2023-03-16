@@ -6,6 +6,7 @@ class CloudRunJob(cloud_run_v2_job.CloudRunV2Job):
         self, 
         scope: Construct,
         name: str,
+        location: str,
         **kwargs
     ):
 
@@ -14,7 +15,4 @@ class CloudRunJob(cloud_run_v2_job.CloudRunV2Job):
         else:
             kwargs["labels"] = {"cdktf-sandevistan": scope.name}
 
-        if("location" not in kwargs):
-            kwargs["location"] = scope.region
-
-        super().__init__(scope, name, name=name, launch_stage="BETA", **kwargs)
+        super().__init__(scope, name, location=location, name=name, launch_stage="BETA", **kwargs)

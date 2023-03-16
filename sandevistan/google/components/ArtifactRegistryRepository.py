@@ -6,7 +6,7 @@ class ArtifactRegistryRepository(artifact_registry_repository.ArtifactRegistryRe
         self, 
         scope: Construct,
         name: str,
-        format='DOCKER',
+        location: str,
         **kwargs
     ):
 
@@ -15,7 +15,4 @@ class ArtifactRegistryRepository(artifact_registry_repository.ArtifactRegistryRe
         else:
             kwargs["labels"] = {"cdktf-sandevistan": scope.name}
 
-        if("location" not in kwargs):
-            kwargs["location"] = scope.region
-
-        super().__init__(scope, name, format=format, repository_id=name, **kwargs)
+        super().__init__(scope, name, location=location, repository_id=name, **kwargs)

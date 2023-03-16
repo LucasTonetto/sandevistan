@@ -11,7 +11,4 @@ class CloudSchedulerJob(cloud_scheduler_job.CloudSchedulerJob):
         **kwargs
     ):
 
-        if("region" not in kwargs):
-            kwargs["region"] = scope.region
-
         super().__init__(scope, name, name=name, schedule=schedule, time_zone=time_zone, **kwargs)

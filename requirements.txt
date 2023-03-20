@@ -1,0 +1,4 @@
+cdktf==0.15.5
+cdktf-cdktf-provider-aws==12.0.9
+cdktf-cdktf-provider-google==5.0.8
+cdktf-cdktf-provider-null ==5.0.0

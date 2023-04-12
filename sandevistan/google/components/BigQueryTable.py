@@ -35,11 +35,24 @@ class BigQueryTable(bigquery_table.BigqueryTable):
                 table_schema_str += field['mode']
                 table_schema_str += '","description":"'
                 table_schema_str += field['description']
-                table_schema_str += '"},'
+                table_schema_str += '"'
+                if 'fields' in field:
+                    table_schema_str += ',"fields":['
+                    for list_field in field['fields']: 
+                        table_schema_str += '{'
+                        table_schema_str += '"name":"'
+                        table_schema_str += list_field['name']
+                        table_schema_str += '","type":"'
+                        table_schema_str += list_field['type']
+                        table_schema_str += '","mode":"'
+                        table_schema_str += list_field['mode']
+                        table_schema_str += '","description":"'
+                        table_schema_str += list_field['description']
+                        table_schema_str += '"},'
+                    table_schema_str=table_schema_str[0:-1]
+                    table_schema_str += ']'
+                table_schema_str += '},'
         table_schema_str = table_schema_str[0:-1]
         table_schema_str += ']'
 
-
-        schema_str = table_schema_str
-
-        super().__init__(scope, id, dataset_id=dataset_id, table_id=table_id, schema=schema_str, **kwargs)
+        super().__init__(scope, id, dataset_id=dataset_id, table_id=table_id, schema=schema, **kwargs)

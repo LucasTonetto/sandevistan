@@ -24,10 +24,11 @@ class CloudFunctionScheduled():
         stack_name: str,
         project: str,
         location: str,
-        service_account_key_paht: str,
+        service_account_key_path: str,
         cf_name: str,
-        cf_code_path_folder:str,
-        bucket_name_for_cf_code: str,
+        cf_code_path_folder: str = None,
+        bucket_name_for_cf_code: str = None,
+        source_repository: str = None,
         schedule: str = None,
         prod_environment = False,
         create_secret_keys = False,
@@ -48,7 +49,7 @@ class CloudFunctionScheduled():
     ):
 
         self.environment_variables = environment_variables
-        self.service_account_key_paht = service_account_key_paht
+        self.service_account_key_path = service_account_key_path
         self.scope = scope
         self.stack_name = stack_name
         self.project = project
@@ -56,6 +57,7 @@ class CloudFunctionScheduled():
         self.cf_name = cf_name
         self.cf_code_path_folder = cf_code_path_folder
         self.bucket_name_for_cf_code = bucket_name_for_cf_code
+        self.source_repository = source_repository
         self.prod_environment = prod_environment
         self.create_secret_keys = create_secret_keys
         self.cf_runtime = cf_runtime
@@ -108,9 +110,9 @@ class CloudFunctionScheduled():
 
         timestamp_now = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-        self.clear_zip_files(cf_code_path_folder)
-
-        self.zip_cf_code(cf_code_path_folder, timestamp_now)
+        if(self.cf_code_path_folder is not None):
+            self.clear_zip_files(cf_code_path_folder)
+            self.zip_cf_code(cf_code_path_folder, timestamp_now)
 
         self.add_gcp_provider()
 
@@ -138,7 +140,7 @@ class CloudFunctionScheduled():
 
             null_resource.add_override(
                 "provisioner.local-exec.command", 
-                f'python {os.path.join(os.path.abspath("./"), "lib", "insert_data_bq.py")} {self.project} {self.dataset_dev} {self.dataset_prod} {self.table_name} {os.path.abspath(self.service_account_key_paht)}'
+                f'python {os.path.join(os.path.abspath("./"), "lib", "insert_data_bq.py")} {self.project} {self.dataset_dev} {self.dataset_prod} {self.table_name} {os.path.abspath(self.service_account_key_path)}'
             )
 
             last_dependency = null_resource
@@ -178,12 +180,15 @@ class CloudFunctionScheduled():
         else:
             dependencies_for_cf = [last_dependency]
 
-        cf_zip_cod_storage = self.input_object_into_storage_bucket(timestamp_now, depends_on=dependencies_for_cf)
+        cf_zip_cod_storage = None
 
-        self.add_cloud_function(cf_zip_cod_storage, event_trigger_cf)
+        if(self.bucket_name_for_cf_code is not None):
+            cf_zip_cod_storage = self.input_object_into_storage_bucket(timestamp_now, depends_on=dependencies_for_cf)
+
+        self.add_cloud_function(event_trigger_cf, cf_zip_cod_storage)
 
     def set_credentials_keys(self):
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.abspath(self.service_account_key_paht)
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.abspath(self.service_account_key_path)
 
     def set_cf_environment_variables(self, env_var_name, value):
         self.environment_variables[env_var_name] = value
@@ -279,7 +284,8 @@ class CloudFunctionScheduled():
             depends_on=depends_on
         )
 
-    def add_cloud_function(self, cf_zip_cod_storage, event_trigger_cf):
+    def add_cloud_function(self, event_trigger_cf, cf_zip_cod_storage):
+        depends_on = None if cf_zip_cod_storage == None else [cf_zip_cod_storage]
         return CloudFunction(
             self.scope,
             self.cf_name,
@@ -287,11 +293,14 @@ class CloudFunctionScheduled():
             runtime=self.cf_runtime,
             available_memory_mb=self.cf_memory,
             source_archive_bucket=self.bucket_name_for_cf_code,
-            source_archive_object=cf_zip_cod_storage.name,
+            source_archive_object=cf_zip_cod_storage.name if cf_zip_cod_storage is not None else None,
+            source_repository={
+                'url': self.source_repository
+            },
             timeout=self.cf_timeout,
             entry_point=self.cf_entrypoint,
             environment_variables=self.environment_variables,
-            depends_on=[cf_zip_cod_storage],
+            depends_on=depends_on,
             event_trigger=event_trigger_cf,
             secret_environment_variables=self.secret_environment_variables
         )
@@ -304,7 +313,7 @@ class CloudFunctionScheduled():
             self.schedule,
             pubsub_target={
                 'topic_name': pubsub_topic_name,
-                'data': self.pubsub_message_scheduled
+                'data': str(base64.b64encode(self.pubsub_message_scheduled.encode('utf-8')), encoding='ascii')
             },
             depends_on=depends_on
         )

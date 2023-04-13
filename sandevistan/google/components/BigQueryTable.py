@@ -55,4 +55,4 @@ class BigQueryTable(bigquery_table.BigqueryTable):
         table_schema_str = table_schema_str[0:-1]
         table_schema_str += ']'
 
-        super().__init__(scope, id, dataset_id=dataset_id, table_id=table_id, schema=schema, **kwargs)
+        super().__init__(scope, id, dataset_id=dataset_id, table_id=table_id, schema=table_schema_str, **kwargs)

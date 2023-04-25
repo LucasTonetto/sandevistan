@@ -1,3 +1,11 @@
 build/
 dist/
 sandevistan.egg-info
+venv/
+service_account.json
+cdktf.json
+Pipfile
+requirements.txt
+*.pyc
+cdktf.out
+terraform.sandevistan*

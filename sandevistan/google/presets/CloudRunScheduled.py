@@ -1,10 +1,10 @@
 import os
 from constructs import Construct
 
-from sandevistan.provider.NullProvider import NullProvider
+from sandevistan.providers.NullProvider import NullProvider
 from sandevistan.null.components.NullResource import NullResource
 
-from sandevistan.provider.GoogleProvider import GoogleProvider
+from sandevistan.providers.GoogleProvider import GoogleProvider
 from sandevistan.google.components.ArtifactRegistryRepository import ArtifactRegistryRepository
 from sandevistan.google.components.CloudRunJob import CloudRunJob
 from sandevistan.google.components.CloudSchedulerJob import CloudSchedulerJob

@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     readme = fh.read()
 
 setup(name='sandevistan',
-    version='0.0.15',
+    version='0.0.16',
     url='https://github.com/LucasTonetto/sandevistan',
     license='MIT License',
     author='Lucas Tonetto Firmo',

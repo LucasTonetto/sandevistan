@@ -8,4 +8,4 @@ Pipfile
 requirements.txt
 *.pyc
 cdktf.out
-terraform.sandevistan*
+terraform*
